@@ -7,7 +7,7 @@ require('./database/config').connectDB();
 
 app.use(express.json());
 app.use(express.static('public'));
-app.use('/movies', require('./routes/moviesRouter'));
+app.use('/movie', require('./routes/moviesRouter'));
 app.use('/clasification', require('./routes/clasificationRouter'));
 
 app.listen(port,() => {
