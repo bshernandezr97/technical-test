@@ -15,4 +15,9 @@ const MovieSchema = new Schema({
     }
 });
 
+MovieSchema.method('toJSON', function() {
+    const { __v, ...object } = this.toObject();
+    return object;
+});
+
 module.exports = model('Movie', MovieSchema);

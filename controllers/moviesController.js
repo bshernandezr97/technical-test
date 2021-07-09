@@ -3,10 +3,11 @@ const { response } = require('express');
 
 const addMovie = async (req, res = response) => {
   try {
-    const movie = await Movie.create({ ...req.body });
+    const movieDB = await Movie.create({ ...req.body });
+    const {__v, ...movie} = movieDB._doc;
     return res.status(201).json({
       ok: true,
-      ...movie._doc,
+      movie,
     });
   } catch (e) {
     console.log(e);
@@ -19,23 +20,24 @@ const addMovie = async (req, res = response) => {
 
 const updateMovie = async (req, res = response) => {
   try {
-    let movie = await Movie.findById(req.params.id);
-    if (!movie) {
+    let movieDB = await Movie.findById(req.params.id);
+    if (!movieDB) {
       return res.status(400).json({
         ok: false,
         message: 'Movie id does not exists',
       });
     }
-    movie = await Movie.findByIdAndUpdate(
+    movieDB = await Movie.findByIdAndUpdate(
       req.params.id,
       {
         $set: { ...req.body },
       },
       { new: true }
     );
+    const {__v, ...movie} = movieDB._doc;
     return res.status(200).json({
       ok: true,
-      ...movie._doc,
+      movie,
     });
   } catch (e) {
     console.log(e);
@@ -73,7 +75,7 @@ const getMovies = async (req, res = response) => {
     let movies = await Movie.find({}).populate('clasification');
     res.status(200).json({
       ok: true,
-      ...movies,
+      movies,
     });
   } catch (e) {
     console.log(e);

@@ -3,10 +3,11 @@ const { response } = require("express");
 
 const addClasification = async (req, res = response) => {
   try {
-    const clasification = await Clasification.create({ ...req.body });
+    const clasificationDB = await Clasification.create({ ...req.body });
+    const {__v, ...clasification} = clasificationDB._doc;
     return res.status(201).json({
       ok: true,
-      ...clasification._doc,
+      clasification,
     });
   } catch (e) {
     console.log(e);
@@ -19,23 +20,24 @@ const addClasification = async (req, res = response) => {
 
 const updateClasification = async (req, res = response) => {
   try {
-    let clasification = await Clasification.findById(req.params.id);
-    if (!clasification) {
+    let clasificationDB = await Clasification.findById(req.params.id);
+    if (!clasificationDB) {
       return res.status(400).json({
         ok: false,
         message: "Clasification id does not exists",
       });
     }
-    clasification = await Clasification.findByIdAndUpdate(
+    clasificationDB = await Clasification.findByIdAndUpdate(
       req.params.id,
       {
         $set: { ...req.body },
       },
       { new: true }
     );
+    const {__v, ...clasification} = clasificationDB._doc;
     return res.status(200).json({
       ok: true,
-      ...clasification._doc,
+      clasification
     });
   } catch (e) {
     console.log(e);
