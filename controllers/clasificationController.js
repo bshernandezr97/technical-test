@@ -3,7 +3,14 @@ const { response } = require("express");
 
 const addClasification = async (req, res = response) => {
   try {
-    const clasificationDB = await Clasification.create({ ...req.body });
+    let clasificationDB = await Clasification.findOne({name: req.body.name});
+    if(clasificationDB) {
+      return res.status(400).json({
+        ok: false,
+        message: 'This classification name already exists'
+      })
+    }
+    clasificationDB = await Clasification.create({ ...req.body });
     const {__v, ...clasification} = clasificationDB._doc;
     return res.status(201).json({
       ok: true,
@@ -75,7 +82,7 @@ const getClasifications = async (req, res = response) => {
     let clasifications = await Clasification.find({});
     res.status(200).json({
       ok: true,
-      ...clasifications,
+      clasifications,
     });
   } catch (e) {
     console.log(e);
