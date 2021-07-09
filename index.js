@@ -8,9 +8,10 @@ require('./database/config').connectDB();
 
 app.use(cors());
 app.use(express.json());
+app.use('/api/movie', require('./routes/moviesRouter'));
+app.use('/api/clasification', require('./routes/clasificationRouter'));
 app.use(express.static('public'));
-app.use('/movie', require('./routes/moviesRouter'));
-app.use('/clasification', require('./routes/clasificationRouter'));
+app.use('*', express.static('public'));
 
 app.listen(port,() => {
     console.log(`Server listen in port ${port}`);
